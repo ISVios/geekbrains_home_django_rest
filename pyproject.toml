@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "geekbrains-home-django-rest"
+version = "0.0.0"
+description = "Веб-сайт для работы с TODO-заметками"
+authors = ["Vios <i.svoboda.vios@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "geekbrains_home_django_rest"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+django = "3.2"
+djangorestframework = "^3.14.0"
+Markdown = "^3.4.1"
+django-filter = "^22.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
