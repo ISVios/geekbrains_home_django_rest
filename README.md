@@ -2,7 +2,7 @@
 
 ## "Веб-сайт для работы с TODO-заметками"
 
-~~[Home work 1]("#")~~
+[Home work 1]("https://github.com/ISVios/geekbrains_home_django_rest/pull/1")
 ~~[Home work 2]("#")~~
 ~~[Home work 3]("#")~~
 ~~[Home work 4]("#")~~
