@@ -2,7 +2,13 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+import axios from 'axios';
+
 import AuthorList from "./components/Author.js"
+
+import Footer from "./components/Footer.js"
+
+import Menu from "./components/Menu.js"
 
 class App extends React.Component {
   constructor(props) {
@@ -13,35 +19,27 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const authors = [
-      {
-        "first_name": "First name 1",
-        "last_name": "Last name 1",
-        "birthday": "2022"
-      },
-      {
-        "first_name": "First name 2",
-        "last_name": "Last name 2",
-        "birthday": "1993"
-      },
-      {
-        "first_name": "First name 3",
-        "last_name": "Last name 3",
-        "birthday": "1989"
-      }
-    ]
-
-    this.setState(
-      {
-        "authors": authors
-      }
-    )
+    axios.get("http://127.0.0.1:8000/api/author").then( response => {
+      const authors = response.data
+      this.setState(
+        {
+          "authors" : authors
+        }
+      )
+    }
+    ).catch(error => {
+      console.log(error)
+    })
   }
 
   render() {
     return (
       <div>
+      <Menu />
+      <hr />
       <AuthorList authors={this.state.authors} />
+      <hr />
+      <Footer />
       </div>
     )
   }
