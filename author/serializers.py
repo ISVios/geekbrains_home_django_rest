@@ -12,3 +12,9 @@ class ProjectModelSerilizer(HyperlinkedModelSerializer):
         model = author_models.ProjectModel
         fields = ["name", "repo_url", "persones"]
 ###############################################################################
+
+class TodoModelSerilizer(HyperlinkedModelSerializer):
+    class Meta:
+        model = author_models.TodoModel
+        fields = ["content", "project", "persone"]
+###############################################################################

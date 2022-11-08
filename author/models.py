@@ -152,7 +152,7 @@ class TodoModel(models.Model):
     project = models.ForeignKey(ProjectModel, on_delete=models.CASCADE)
 
     #Todo: change to model.Do_Nothong
-    user = models.ForeignKey(PersoneModel, on_delete=models.CASCADE)
+    persone = models.ForeignKey(PersoneModel, on_delete=models.CASCADE)
 
     create = models.DateTimeField(
             auto_now_add=True,
