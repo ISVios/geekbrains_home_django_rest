@@ -21,6 +21,8 @@ from author import views as author_views
 
 router = DefaultRouter()
 router.register("author", author_views.PersoneModelViewSet, "PersoneModel")
+router.register("project", author_views.ProjectModelViewSet, "ProjectModel")
+router.register("todo", author_views.TodoModelViewSet, "TodoModel")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
