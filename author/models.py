@@ -1,10 +1,9 @@
 from django.db import models
 
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.mail import send_mail
-from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 class CharFieldCaseIgnore(models.CharField):
@@ -89,8 +88,7 @@ class PersoneModel(AbstractBaseUser, PermissionsMixin):
         if self.first_name and self.surname:
             full_name = f"{self.first_name:s} {self.surname:s}"
             return full_name.strip()
-        else:
-            return ""
+        return ""
 
     def get_short_name(self):
         """Return the short name for the user if exists."""
@@ -99,4 +97,47 @@ class PersoneModel(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+###############################################################################
 
+class ProjectModel(models.Model):
+    """
+    Project
+    """
+    class Meta:
+        verbose_name = _("project")
+        verbose_name_plural = _("projects")
+
+    name = models.CharField(
+            max_length=256,
+            verbose_name="project name"
+            )
+
+    persones = models.ManyToManyField(PersoneModel)
+
+    repo_url = models.CharField(
+            blank=True,
+            null=True,
+            max_length=1024,
+            verbose_name="repo_url"
+            )
+
+    create = models.DateTimeField(
+            auto_now=True,
+            verbose_name="created"
+            )
+
+    update = models.DateTimeField(
+            auto_now_add=True,
+            editable=False,
+            verbose_name="updated"
+            )
+
+    deleted = models.BooleanField(
+            default=False,
+            editable=False,
+            verbose_name="deleted"
+            )
+
+    def __str__(self):
+        return f"Project {self.name}"
+###############################################################################
