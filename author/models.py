@@ -141,3 +141,33 @@ class ProjectModel(models.Model):
     def __str__(self):
         return f"Project {self.name}"
 ###############################################################################
+
+class TodoModel(models.Model):
+
+    content = models.TextField(
+            blank=False,
+            null = False
+            )
+    #Todo: change to model.Do_Nothong
+    project = models.ForeignKey(ProjectModel, on_delete=models.CASCADE)
+
+    #Todo: change to model.Do_Nothong
+    user = models.ForeignKey(PersoneModel, on_delete=models.CASCADE)
+
+    create = models.DateTimeField(
+            auto_now_add=True,
+            verbose_name="created"
+            )
+    update = models.DateTimeField(
+            auto_now=True,
+            verbose_name="update"
+            )
+    open = models.BooleanField(
+            default=True
+            )
+    deleted = models.BooleanField(
+            default=False
+            )
+    def __str__(self):
+        return f"Todo {self.pk}"
+###############################################################################
