@@ -11,3 +11,8 @@ class ProjectModelViewSet(ModelViewSet):
     queryset = author_models.ProjectModel.objects.all()
     serializer_class = author_selial.ProjectModelSerilizer
 ###############################################################################
+
+class TodoModelViewSet(ModelViewSet):
+    queryset = author_models.TodoModel.objects.all()
+    serializer_class = author_selial.TodoModelSerilizer
+###############################################################################
