@@ -4,17 +4,17 @@ from author import models as author_models
 class PersoneModelSerializer(ModelSerializer):
     class Meta:
         model = author_models.PersoneModel
-        fields = ["username", "first_name", "surname", "email"]
+        fields = ["pk", "username", "first_name", "surname", "email"]
 ###############################################################################
 
 class ProjectModelSerilizer(ModelSerializer):
     class Meta:
         model = author_models.ProjectModel
-        fields = ["name", "repo_url", "persones"]
+        fields = ["pk", "name", "repo_url", "persones"]
 ###############################################################################
 
 class TodoModelSerilizer(ModelSerializer):
     class Meta:
         model = author_models.TodoModel
-        fields = ["content", "project", "persone"]
+        fields = ["pk", "content", "project", "persone", "active"]
 ###############################################################################
