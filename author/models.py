@@ -146,13 +146,13 @@ class TodoModel(models.Model):
 
     content = models.TextField(
             blank=False,
-            null = False
+            null=False
             )
     #Todo: change to model.Do_Nothong
     project = models.ForeignKey(ProjectModel, on_delete=models.CASCADE)
 
     #Todo: change to model.Do_Nothong
-    persone = models.ForeignKey(PersoneModel, on_delete=models.CASCADE)
+    persone = models.ForeignKey(PersoneModel,on_delete=models.CASCADE)
 
     create = models.DateTimeField(
             auto_now_add=True,
@@ -162,7 +162,7 @@ class TodoModel(models.Model):
             auto_now=True,
             verbose_name="update"
             )
-    open = models.BooleanField(
+    active = models.BooleanField(
             default=True
             )
     deleted = models.BooleanField(
