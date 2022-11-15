@@ -1,35 +1,36 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import axios from 'axios';
 
-import AuthorList from "./components/Author.js"
-
+import Menu   from "./components/Menu.js"
 import Footer from "./components/Footer.js"
 
-import Menu from "./components/Menu.js"
+import PersoneList from "./components/Persone.js"
+import ProjectList from './components/Project';
 
 class App extends React.Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      "authors" : []
-    }
+			"personeSet" : [],
+			"projectSet" : [],
+			"todoSet": []
+    };
   }
 
   componentDidMount() {
-    axios.get("http://127.0.0.1:8000/api/author").then( response => {
-      const authors = response.data
-      this.setState(
-        {
-          "authors" : authors
-        }
-      )
-    }
-    ).catch(error => {
-      console.log(error)
-    })
+		const url = "http://127.0.0.1:8000/api/";
+		const objs = ["persone", "project", "todo"];
+
+		objs.forEach((obj) => {
+				axios.get(url + obj).then(response => {
+						const req = {}
+						req[obj + "Set"] = response.data;
+						this.setState(req)
+				});
+		} );
+		
   }
 
   render() {
@@ -37,11 +38,15 @@ class App extends React.Component {
       <div>
       <Menu />
       <hr />
-      <AuthorList authors={this.state.authors} />
+			<PersoneList personeSet={this.state.personeSet} />
+      <hr />
+			<ProjectList 
+						projectSet={this.state.projectSet} 
+						todoSet={this.state.todoSet} /> 
       <hr />
       <Footer />
       </div>
-    )
+    );
   }
 }
 
