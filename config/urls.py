@@ -22,10 +22,14 @@ from author import views as author_views
 router = DefaultRouter()
 router.register("persone", author_views.PersoneModelViewSet, "PersoneModel")
 router.register("project", author_views.ProjectModelViewSet, "ProjectModel")
-router.register("todo", author_views.TodoModelViewSet, "TodoModel")
+
+
+filter_router = DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('api/todo/', author_views.TodoModelAPIView.as_view()),
+    path('api/todo/<int:pk>', author_views.TodoModelAPIView.as_view()),
 ]
