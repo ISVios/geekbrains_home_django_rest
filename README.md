@@ -4,13 +4,13 @@
 
 [Home work 1](https://github.com/ISVios/geekbrains_home_django_rest/pull/1)
 
-~~[Home work 2]("#")~~
+[Home work 2](https://github.com/ISVios/geekbrains_home_django_rest/pull/2)
 
-~~[Home work 3]("#")~~
+[Home work 3](https://github.com/ISVios/geekbrains_home_django_rest/pull/3)
 
-~~[Home work 4]("#")~~
+[Home work 4](https://github.com/ISVios/geekbrains_home_django_rest/pull/4)
 
-~~[Home work 5]("#")~~
+[Home work 5](https://github.com/ISVios/geekbrains_home_django_rest/pull/5)
 
 ~~[Home work 6]("#")~~
 
