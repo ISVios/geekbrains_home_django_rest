@@ -22,7 +22,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const url = "http://127.0.0.1:8000/api/";
+    const url = URL["backend"];
     const objs = ["persone", "project", "todo"];
 
     objs.forEach((obj) => {
