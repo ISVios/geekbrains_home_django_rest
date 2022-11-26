@@ -1,6 +1,7 @@
 const URL = {};
 
 URL["backend"] = "http://127.0.0.1:8000/api/";
+URL["backend_token_auth"] = "http://127.0.0.1:8000/api-token-auth/";
 
 URL["home"] = "/";
 
