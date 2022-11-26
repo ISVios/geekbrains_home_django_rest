@@ -51,6 +51,7 @@ class TodoModelAPIView(APIView, LimitOffsetPagination):
     renderer_classes = [
             CamelCaseJSONRenderer, 
             BrowsableAPIRenderer]
+    queryset = author_models.TodoModel.objects.all()
 
     def get(self, request, pk=None, format=None):
         if pk:
@@ -67,9 +68,7 @@ class TodoModelAPIView(APIView, LimitOffsetPagination):
         project_index = req.get("project")
         # filter by project
         if project_index:
-            print(int(project_index))
             todo_list = todo_list.filter(project=int(project_index))
-            print(todo_list)
         todo_page = self.paginate_queryset(
                 todo_list, 
                 self.request,
