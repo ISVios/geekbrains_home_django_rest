@@ -22,18 +22,18 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    const a = true;
+    if (a) return;
     const url = URL["backend"];
     const objs = ["persone", "project", "todo"];
 
     objs.forEach((obj) => {
-      axios
-        .get(url + obj)
-        .then((response) => {
-          const req = {};
-          req[obj + "Set"] = response.data["results"];
-          this.setState(req);
-        })
-        .catch((error) => console.log(error));
+      axios.get(url + obj).then((response) => {
+        const req = {};
+        req[obj + "Set"] = response.data["results"];
+        this.setState(req);
+      });
+      //        .catch((error) => console.log(error));
     });
   }
 
@@ -49,7 +49,6 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.home} />
                   <hr />
-                  SOME LOGIN FORM
                   <LoginForm />
                   <hr />
                 </>
