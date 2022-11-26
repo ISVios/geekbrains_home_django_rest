@@ -3,6 +3,7 @@ import "./App.css";
 
 import axios from "axios";
 import { Route, BrowserRouter, Routes } from "react-router-dom";
+import Cookies from "universal-cookie";
 
 import Menu from "./components/Menu.js";
 import Footer from "./components/Footer.js";
@@ -18,23 +19,63 @@ class App extends React.Component {
       personeSet: [],
       projectSet: [],
       todoSet: [],
+      token: "",
     };
   }
 
-  componentDidMount() {
-    const a = true;
-    if (a) return;
+  getToken(login, password) {
+    axios
+      .post(URL["backend_token_auth"], {
+        username: login,
+        password: password,
+      })
+      .then((response) => {
+        this.setToken(response.data["token"]);
+      })
+      .catch((error) => {
+        alert("Wrong login or password");
+      });
+  }
+
+  setToken(token) {
+    const cookie = new Cookies();
+    cookie.set("token", token);
+    this.setState({ token: token });
+  }
+
+  isAuth() {
+    return this.state.token !== "";
+  }
+
+  logout() {
+    this.setToken("");
+  }
+
+  loadData() {
     const url = URL["backend"];
     const objs = ["persone", "project", "todo"];
 
     objs.forEach((obj) => {
-      axios.get(url + obj).then((response) => {
-        const req = {};
-        req[obj + "Set"] = response.data["results"];
-        this.setState(req);
-      });
-      //        .catch((error) => console.log(error));
+      axios
+        .get(url + obj)
+        .then((response) => {
+          const req = {};
+          req[obj + "Set"] = response.data["results"];
+          this.setState(req);
+        })
+        .catch((error) => console.log(error));
     });
+  }
+
+  getTokenFromStorage() {
+    const cookie = new Cookies();
+    const token = cookie.get("token");
+    this.setState({ token: token });
+  }
+
+  componentDidMount() {
+    this.getTokenFromStorage();
+    this.loadData();
   }
 
   render() {
@@ -49,7 +90,15 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.home} />
                   <hr />
-                  <LoginForm />
+                  {this.isAuth() ? (
+                    <button onClick={() => this.logout()}>Logout</button>
+                  ) : (
+                    <LoginForm
+                      getToken={(username, password) => {
+                        return this.getToken(username, password);
+                      }}
+                    />
+                  )}
                   <hr />
                 </>
               }

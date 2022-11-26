@@ -12,23 +12,8 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit(event) {
-    this.getToken(this.state.login, this.state.password);
+    this.props.getToken(this.state.login, this.state.password);
     event.preventDefault();
-  }
-
-  getToken(login, password) {
-    axios
-      .post("http://127.0.0.1:8000/api-token-auth/", {
-        username: login,
-        password: password,
-      })
-      .then((response) => {
-        console.log(response.data);
-        return true;
-      })
-      .catch((error) => {
-        alert("Wrong login or password");
-      });
   }
 
   render() {
