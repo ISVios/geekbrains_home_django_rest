@@ -12,9 +12,9 @@
 
 [Home work 5](https://github.com/ISVios/geekbrains_home_django_rest/pull/5)
 
-~~[Home work 6]("#")~~
+[Home work 6](https://github.com/ISVios/geekbrains_home_django_rest/pull/6)
 
-~~[Home work 7]("#")~~
+[Home work 7](https://github.com/ISVios/geekbrains_home_django_rest/pull/7)
 
 ~~[Home work 8]("#")~~
 
