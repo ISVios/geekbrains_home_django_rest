@@ -9,7 +9,11 @@ import Menu from "./components/Menu.js";
 import Footer from "./components/Footer.js";
 import URL from "./URL";
 import { PersoneList, PersoneInfo } from "./components/Persone.js";
-import { ProjectList, ProjectDetail } from "./components/Project";
+import {
+  ProjectList,
+  ProjectDetail,
+  CurrentUserProjectList,
+} from "./components/Project";
 import LoginForm from "./components/Auth";
 import TodoList from "./components/Todo";
 
@@ -68,7 +72,9 @@ class App extends React.Component {
     const url = URL["backend"];
     const objs = ["persone", "project", "todo"];
 
-    if(!this.isAuth()) {return;}
+    if (!this.isAuth()) {
+      return;
+    }
 
     objs.forEach((obj) => {
       axios
@@ -200,7 +206,7 @@ class App extends React.Component {
                   <hr />
                   <PersoneInfo personeSet={this.state.personeSet} />
                   <hr />
-                  <ProjectList projectSet={this.state.projectSet} />
+                  <CurrentUserProjectList projectSet={this.state.projectSet} />
                   <hr />
                 </>
               }
@@ -212,7 +218,10 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.persone_project_all} loginForm={loginApi} />
                   <hr />
-                  <ProjectList projectSet={this.state.projectSet} />
+                  <CurrentUserProjectList
+                    projectSet={this.state.projectSet}
+                    todoSet={this.state.todoSet}
+                  />
                   <hr />
                 </>
               }
@@ -232,7 +241,7 @@ class App extends React.Component {
                 </>
               }
             />
-            (// persone_todo_all)
+            (// persone_todo_all DELETE ???)
             <Route
               path={URL.persone_todo_all}
               element={
@@ -244,8 +253,7 @@ class App extends React.Component {
                 </>
               }
             />
-            (// persone_todo_id NEED just for command put update) (// 404 MUST
-            BE LAST)
+            (// 404 MUST BE LAST)
             <Route
               path="*"
               element={
