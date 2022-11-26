@@ -9,6 +9,7 @@ import Footer from "./components/Footer.js";
 import URL from "./URL";
 import { PersoneList, PersoneInfo } from "./components/Persone.js";
 import { ProjectList, ProjectDetail } from "./components/Project";
+import LoginForm from "./components/Auth";
 
 class App extends React.Component {
   constructor(props) {
@@ -25,11 +26,14 @@ class App extends React.Component {
     const objs = ["persone", "project", "todo"];
 
     objs.forEach((obj) => {
-      axios.get(url + obj).then((response) => {
-        const req = {};
-        req[obj + "Set"] = response.data["results"];
-        this.setState(req);
-      });
+      axios
+        .get(url + obj)
+        .then((response) => {
+          const req = {};
+          req[obj + "Set"] = response.data["results"];
+          this.setState(req);
+        })
+        .catch((error) => console.log(error));
     });
   }
 
@@ -46,6 +50,7 @@ class App extends React.Component {
                   <Menu state={URL.home} />
                   <hr />
                   SOME LOGIN FORM
+                  <LoginForm />
                   <hr />
                 </>
               }
