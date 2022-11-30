@@ -21,6 +21,7 @@ djangorestframework-simplejwt = "^5.2.2"
 
 [tool.poetry.group.dev.dependencies]
 jedi = "^0.18.1"
+mixer = "^7.2.2"
 
 [build-system]
 requires = ["poetry-core"]
