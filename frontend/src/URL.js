@@ -1,11 +1,16 @@
 const URL = {};
 
+URL["backend"] = "http://127.0.0.1:8000/api/";
+URL["backend_token_auth"] = "http://127.0.0.1:8000/api-token-auth/";
+
 URL["home"] = "/";
+
+URL["logon"] = "login/"
 
 // All
 URL["persone_all"] = "/persone_all";
-//URL["todo_all"] = "/todo_all";
-//URL["project_all"] = "/project_all"
+URL["todo_all"] = "/todo_all";
+URL["project_all"] = "/project_all"
 
 // By id
 URL["persone_id"] = "/persone/:persone_pk";

@@ -5,7 +5,7 @@ import TodoList from "./Todo";
 
 const ProjectDetail = ({ projectSet, todoSet }) => {
   const { project_pk } = useParams();
-  const project_l = projectSet.filter((item)=>item.pk === Number(project_pk));
+  const project_l = projectSet.filter((item) => item.pk === Number(project_pk));
   return (
     <>
       {project_l.map((item) => {
@@ -46,7 +46,7 @@ const ProjectDetailWithTodos = ({ project, todoSet }) => {
   );
 };
 
-const ProjectItem = ({ project }) => {
+const CurrentUserProjectItem = ({ project }) => {
   const { persone_pk } = useParams();
   return (
     <>
@@ -59,7 +59,7 @@ const ProjectItem = ({ project }) => {
   );
 };
 
-const ProjectList = ({ projectSet, todoSet }) => {
+const CurrentUserProjectList = ({ projectSet, todoSet }) => {
   const { persone_pk } = useParams();
   const filtered = projectSet.filter((item) => {
     return item.persones.includes(Number(persone_pk));
@@ -68,11 +68,35 @@ const ProjectList = ({ projectSet, todoSet }) => {
     <>
       {filtered.map((project) => {
         return (
-          <ProjectItem key={project.pk} project={project} todoSet={todoSet} />
+          <CurrentUserProjectItem
+            key={project.pk}
+            project={project}
+            todoSet={todoSet}
+          />
         );
       })}
     </>
   );
 };
 
-export { ProjectList, ProjectDetail };
+const ProjectItem = ({ project }) => {
+  return (
+    <>
+      <h2>
+        <Link>{project.name}</Link>
+      </h2>
+    </>
+  );
+};
+
+const ProjectList = ({ projectSet }) => {
+  return (
+    <>
+      {projectSet.map((project) => {
+        return <ProjectItem key={project.pk} project={project} />;
+      })}
+    </>
+  );
+};
+
+export { ProjectList, ProjectDetail, CurrentUserProjectList };
