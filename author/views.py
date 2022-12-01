@@ -35,6 +35,10 @@ class PersoneModelViewSet(
 
 
 class ProjectModelViewSet(ModelViewSet):
+    """
+    Returns a list of all projects .
+    """
+
     class Pagger(LimitOffsetPagination):
         default_limit = 10
 
