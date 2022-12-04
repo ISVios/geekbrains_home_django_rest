@@ -1,4 +1,6 @@
 from rest_framework.serializers import ModelSerializer
+
+from author import managers as author_managers
 from author import models as author_models
 
 

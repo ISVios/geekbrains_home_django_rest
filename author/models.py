@@ -6,76 +6,59 @@ from django.contrib.auth.validators import ASCIIUsernameValidator
 from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
+from author import managers as author_managers
+
+
 class CharFieldCaseIgnore(models.CharField):
     """
     ignorecase CharField
     """
+
     def to_python(self, value):
         value = super().to_python(value)
         if isinstance(value, str):
             return value.lower()
         return value
 
+
 class PersoneModel(AbstractBaseUser, PermissionsMixin):
     """
     django model for validators
     """
+
     username_validator = ASCIIUsernameValidator()
-    
+
     objects = UserManager()
 
     username = CharFieldCaseIgnore(
         _("username"),
         max_length=150,
         unique=True,
-        help_text=_("Required. 150 characters or fewer.\
-                    Letters, digits and @/./+/-/_ only."),
+        help_text=_(
+            "Required. 150 characters or fewer.\
+                    Letters, digits and @/./+/-/_ only."
+        ),
         validators=[username_validator],
-        error_messages={
-            "unique":_("A user with that username exists.")
-        }
+        error_messages={"unique": _("A user with that username exists.")},
     )
 
-    first_name = models.CharField(
-        _("first name"),
-        max_length=150,
-        blank=True
-    )
+    first_name = models.CharField(_("first name"), max_length=150, blank=True)
 
-    surname = models.CharField(
-        _("surname"),
-        max_length=150,
-        blank=True,
-        null=True
-    )
+    surname = models.CharField(_("surname"), max_length=150, blank=True, null=True)
 
-    age = models.DateField(
-        _("age"),
-        blank=True,
-        null=True
-    )
+    age = models.DateField(_("age"), blank=True, null=True)
 
     email = CharFieldCaseIgnore(
         _("email"),
         max_length=256,
         unique=True,
-        error_messages={
-            "unique":_("A user with that email address allready exists")
-        }
+        error_messages={"unique": _("A user with that email address allready exists")},
     )
 
-    date_joined = models.DateTimeField(
-        _("joing"),
-        auto_now_add=True,
-        editable=False
-    )
+    date_joined = models.DateTimeField(_("joing"), auto_now_add=True, editable=False)
 
-    is_staff = models.BooleanField(
-            default=False
-            )
-    is_active = models.BooleanField(
-            default=False
-            )
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
 
     EMAIL_FIELD = "email"
     USERNAME_FIELD = "username"
@@ -101,82 +84,66 @@ class PersoneModel(AbstractBaseUser, PermissionsMixin):
 
     def get_short_name(self):
         """Return the short name for the user if exists."""
-        return (self.first_name if self.first_name else "")
+        return self.first_name if self.first_name else ""
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
 ###############################################################################
+
 
 class ProjectModel(models.Model):
     """
     Project
     """
+
+    objects = author_managers.ProjectManager()
+
     class Meta:
         verbose_name = _("project")
         verbose_name_plural = _("projects")
 
-    name = models.CharField(
-            max_length=256,
-            verbose_name="project name"
-            )
+    name = models.CharField(max_length=256, verbose_name="project name")
 
     persones = models.ManyToManyField(PersoneModel)
 
     repo_url = models.CharField(
-            blank=True,
-            null=True,
-            max_length=1024,
-            verbose_name="repo_url"
-            )
+        blank=True, null=True, max_length=1024, verbose_name="repo_url"
+    )
 
-    create = models.DateTimeField(
-            auto_now=True,
-            verbose_name="created"
-            )
+    create = models.DateTimeField(auto_now=True, verbose_name="created")
 
     update = models.DateTimeField(
-            auto_now_add=True,
-            editable=False,
-            verbose_name="updated"
-            )
+        auto_now_add=True, editable=False, verbose_name="updated"
+    )
 
-    deleted = models.BooleanField(
-            default=False,
-            editable=False,
-            verbose_name="deleted"
-            )
+    deleted = models.BooleanField(default=False, editable=False, verbose_name="deleted")
 
     def __str__(self):
         return f"Project {self.name}"
+
+
 ###############################################################################
 
-class TodoModel(models.Model):
 
-    content = models.TextField(
-            blank=False,
-            null=False
-            )
-    #Todo: change to model.Do_Nothong
+class TodoModel(models.Model):
+    objects = author_managers.TodoManager()
+    content = models.TextField(blank=False, null=False)
+    # Todo: change to model.Do_Nothong
     project = models.ForeignKey(ProjectModel, on_delete=models.CASCADE)
 
-    #Todo: change to model.Do_Nothong
-    persone = models.ForeignKey(PersoneModel,on_delete=models.CASCADE)
+    # Todo: change to model.Do_Nothong
+    persone = models.ForeignKey(PersoneModel, on_delete=models.CASCADE)
 
-    create = models.DateTimeField(
-            auto_now_add=True,
-            verbose_name="created"
-            )
-    update = models.DateTimeField(
-            auto_now=True,
-            verbose_name="update"
-            )
-    active = models.BooleanField(
-            default=True
-            )
-    deleted = models.BooleanField(
-            default=False
-            )
+    create = models.DateTimeField(auto_now_add=True, verbose_name="created")
+    update = models.DateTimeField(auto_now=True, verbose_name="update")
+    active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+
     def __str__(self):
         return f"Todo {self.pk}"
+
+
 ###############################################################################
