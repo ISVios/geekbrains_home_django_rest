@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import ProjectForm from "./ProjectForm";
 
 import TodoList from "./Todo";
 
@@ -46,7 +47,7 @@ const ProjectDetailWithTodos = ({ project, todoSet }) => {
   );
 };
 
-const CurrentUserProjectItem = ({ project }) => {
+const CurrentUserProjectItem = ({ project, deleteProjectClb }) => {
   const { persone_pk } = useParams();
   return (
     <>
@@ -54,12 +55,25 @@ const CurrentUserProjectItem = ({ project }) => {
         <Link to={"/persone/" + persone_pk + "/project/" + project.pk}>
           {project.name}
         </Link>
+        <button>Edit</button>{" "}
+        <button
+          onClick={() => {
+            deleteProjectClb(project);
+          }}
+        >
+          Del
+        </button>
       </h2>
     </>
   );
 };
 
-const CurrentUserProjectList = ({ projectSet, todoSet }) => {
+const CurrentUserProjectList = ({
+  projectSet,
+  todoSet,
+  addProjectForm,
+  deleteProjectClb,
+}) => {
   const { persone_pk } = useParams();
   const filtered = projectSet.filter((item) => {
     return item.persones.includes(Number(persone_pk));
@@ -69,12 +83,14 @@ const CurrentUserProjectList = ({ projectSet, todoSet }) => {
       {filtered.map((project) => {
         return (
           <CurrentUserProjectItem
+            deleteProjectClb={deleteProjectClb}
             key={project.pk}
             project={project}
             todoSet={todoSet}
           />
         );
       })}
+      {addProjectForm}
     </>
   );
 };
@@ -89,14 +105,43 @@ const ProjectItem = ({ project }) => {
   );
 };
 
-const ProjectList = ({ projectSet }) => {
-  return (
-    <>
-      {projectSet.map((project) => {
-        return <ProjectItem key={project.pk} project={project} />;
-      })}
-    </>
-  );
-};
+class ProjectList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filter_by_name: "",
+    };
+  }
+
+
+	handlerSubmit(event) {
+		
+	}
+
+  render() {
+    const { filterProjectByName } = this.props;
+    const { projectSet } = this.props;
+
+    return (
+      <>
+        <form onSubmit={(event) => this.handlerSubmit(event)}>
+          <input
+            value={this.state.filter_by_name}
+            name="filter_by_name"
+            type="text"
+            onChange={(event) =>
+              this.setState({ filter_by_name: event.target.value })
+            }
+          />
+          <button type="submit">find</button>
+        </form>
+        {projectSet &&
+          projectSet.map((project) => {
+            return <ProjectItem key={project.pk} project={project} />;
+          })}
+      </>
+    );
+  }
+}
 
 export { ProjectList, ProjectDetail, CurrentUserProjectList };

@@ -38,4 +38,7 @@ URL["persone_project_id"] = "/persone/:persone_pk/project/:project_pk";
 // persone_id <-> todo_id
 URL["persone_todo_id"] = "/persone/:persone_pk/todo/:todo_pk";
 
+URL["project_filter_by_name"] = (name) =>
+  "http://127.0.0.1:8000/api/project/?name=" + name;
+
 export default URL;

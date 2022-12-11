@@ -24,6 +24,7 @@ import LoginForm from "./components/Auth";
 import TodoList from "./components/Todo";
 
 import TodoForm from "./components/TodoForm";
+import ProjectForm from "./components/ProjectForm";
 
 class App extends React.Component {
   constructor(props) {
@@ -75,7 +76,6 @@ class App extends React.Component {
       content: text,
       active: close,
     };
-    console.log(data);
     axios
       .post(URL.todo_add, data, { headers })
       .then((response) => {
@@ -89,11 +89,53 @@ class App extends React.Component {
     this.props.history.push(URL.todo_form);
   }
 
+  filterProjectByName(name) {
+    if (!name || name.lenght === 0 || name.trim() === "") {
+      return this.state.projectSet;
+    }
+
+    const headers = this.getHeadr();
+    let filtered = this.state.projectSet;
+    axios
+      .get(URL.project_filter_by_name(name), { headers })
+      .then((response) => {
+        filtered = response.data.results;
+      })
+      .catch((error) => console.error(error));
+    return filtered;
+  }
+
+  addProject(name, persones) {
+    const headers = this.getHeadr();
+    const data = { name: name, persones: persones };
+    console.log(data);
+    axios
+      .post(URL.project_add, data, { headers })
+      .then((response) => {
+        const newProject = response.data;
+        this.setState({ projectSet: [...this.state.projectSet, newProject] });
+      })
+      .catch((error) => console.error(error));
+  }
+
+  deleteProject(project, whoDel) {
+    const headers = this.getHeadr();
+    axios
+      .delete(URL.project_del(project.pk), { headers })
+      .then((response) => {
+        this.setState(
+          this.state.projectSet.filter((elem) => elem.pk !== project.pk)
+        );
+        window.location.reload();
+      })
+      .catch((error) => console.error(error));
+  }
+
   deleteTodo(id) {
     const headers = this.getHeadr();
     axios
       .delete(URL.todo_del(id), { headers })
-      .then((response) => {
+      .then(() => {
         this.setState({
           todoSet: this.state.todoSet.filter((elem) => elem.id !== id),
         });
@@ -184,6 +226,14 @@ class App extends React.Component {
     loginApi["isAuth"] = this.isAuth();
     loginApi["loginForm"] = loginForm;
 
+    const projectFormWithParam = this.state.me && (
+      <ProjectForm
+        me={this.state.me}
+        personeSet={this.state.personeSet}
+        addClb={(name, persones) => this.addProject(name, persones)}
+      />
+    );
+
     const todoFormWithParam = (
       <TodoForm
         addClb={(project, persone, text, close) =>
@@ -248,7 +298,12 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.persone_all} loginForm={loginApi} />
                   <hr />
-                  <ProjectList projectSet={this.state.projectSet} />
+                  <ProjectList
+                    filterProjectByName={(name) =>
+                      this.filterProjectByName(name)
+                    }
+                    projectSet={this.state.projectSet}
+                  />
                   <hr />
                 </>
               }
@@ -299,7 +354,13 @@ class App extends React.Component {
                   <hr />
                   <PersoneInfo personeSet={this.state.personeSet} />
                   <hr />
-                  <CurrentUserProjectList projectSet={this.state.projectSet} />
+                  <CurrentUserProjectList
+                    addProjectForm={projectFormWithParam}
+                    projectSet={this.state.projectSet}
+                    deleteProjectClb={(project) =>
+                      this.deleteProject(project, null)
+                    }
+                  />
                   <hr />
                 </>
               }
