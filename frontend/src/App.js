@@ -152,6 +152,7 @@ class App extends React.Component {
     let loginApi = {};
     let loginForm = null;
     let links = null;
+
     const firstName = this.state.me ? this.state.me.firstName : null;
     if (this.isAuth()) {
       loginForm = (
@@ -193,6 +194,24 @@ class App extends React.Component {
         projectSet={this.state.projectSet}
       />
     );
+
+    if (!this.isAuth()) {
+      return (
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="*"
+              element={
+                <>
+                  <h2>Please Login</h2>
+                  {loginForm}
+                </>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      );
+    }
 
     return (
       <div className="App">
