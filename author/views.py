@@ -109,3 +109,15 @@ class TodoModelAPIView(APIView, LimitOffsetPagination):
             ser = author_selial.TodoModelSerilizer(todo, many=False)
             return Response(ser.data)
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class GetMeApi(APIView):
+    queryset = author_models.PersoneModel.objects.all()
+
+    def get(self, request, format=None):
+        me = self.queryset.get(pk=request.user.pk)
+        if me:
+            ser_me = author_selial.PersoneModelSerializer(instance=me, many=False)
+            return Response(ser_me.data, 200)
+        else:
+            return Response({}, 404)

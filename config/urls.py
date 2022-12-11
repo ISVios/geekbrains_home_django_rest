@@ -45,6 +45,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("getMe/", author_views.GetMeApi.as_view()),
     path("api-auth/", include("rest_framework.urls")),
     re_path(r"^api/(?P<version>v\d)\/", include(router.urls)),
     re_path("api/", include(router.urls)),
@@ -63,5 +64,5 @@ urlpatterns = [
         name="schema-swagger-ui",
     ),
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-    path("graphql/", GraphQLView.as_view(graphiql=True))
+    path("graphql/", GraphQLView.as_view(graphiql=True)),
 ]

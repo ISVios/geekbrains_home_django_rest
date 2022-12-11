@@ -2,7 +2,13 @@ import React from "react";
 import "./App.css";
 
 import axios from "axios";
-import { Route, BrowserRouter, Routes, Link } from "react-router-dom";
+import {
+  Route,
+  BrowserRouter,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import Cookies from "universal-cookie";
 
 import Menu from "./components/Menu.js";
@@ -17,6 +23,8 @@ import {
 import LoginForm from "./components/Auth";
 import TodoList from "./components/Todo";
 
+import TodoForm from "./components/TodoForm";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +33,7 @@ class App extends React.Component {
       projectSet: [],
       todoSet: [],
       token: "",
+      me: null,
     };
   }
 
@@ -45,17 +54,52 @@ class App extends React.Component {
         password: password,
       })
       .then((response) => {
-        this.setToken(response.data["token"]);
+        this.setToken(response.data["token"], login);
       })
       .catch(() => {
         alert("Wrong login or password");
       });
   }
 
-  setToken(token) {
+  setToken(token, login) {
     const cookie = new Cookies();
     cookie.set("token", token);
     window.location.reload();
+  }
+
+  addTodo(project, persone, text, close) {
+    const headers = this.getHeadr();
+    const data = {
+      project: project,
+      persone: persone,
+      content: text,
+      active: close,
+    };
+    console.log(data);
+    axios
+      .post(URL.todo_add, data, { headers })
+      .then((response) => {
+        const newTodo = response.data;
+        this.setState({ todoSet: [...this.state.todoSet, newTodo] });
+      })
+      .catch((error) => console.error(error));
+  }
+
+  openTodoForm(todo, cmd = "add") {
+    this.props.history.push(URL.todo_form);
+  }
+
+  deleteTodo(id) {
+    const headers = this.getHeadr();
+    axios
+      .delete(URL.todo_del(id), { headers })
+      .then((response) => {
+        this.setState({
+          todoSet: this.state.todoSet.filter((elem) => elem.id !== id),
+        });
+        window.location.reload();
+      })
+      .catch((error) => console.error(error));
   }
 
   isAuth() {
@@ -76,15 +120,19 @@ class App extends React.Component {
       return;
     }
 
-    objs.forEach((obj) => {
-      axios
-        .get(url + obj, { headers })
-        .then((response) => {
-          const req = {};
-          req[obj + "Set"] = response.data["results"];
-          this.setState(req);
-        })
-        .catch((error) => console.log(error));
+    axios.get("http://127.0.0.1:8000/getMe/", { headers }).then((response) => {
+      this.setState({ me: response.data }, () => {
+        objs.forEach((obj) => {
+          axios
+            .get(url + obj, { headers })
+            .then((response) => {
+              const req = {};
+              req[obj + "Set"] = response.data["results"];
+              this.setState(req);
+            })
+            .catch((error) => console.log(error));
+        });
+      });
     });
   }
 
@@ -104,10 +152,11 @@ class App extends React.Component {
     let loginApi = {};
     let loginForm = null;
     let links = null;
+    const firstName = this.state.me ? this.state.me.firstName : null;
     if (this.isAuth()) {
       loginForm = (
         <>
-          <p>Welcome:</p>
+          <p>Welcome: {firstName}</p>
           <button onClick={() => this.logout()}>Logout</button>
         </>
       );
@@ -133,6 +182,17 @@ class App extends React.Component {
     }
     loginApi["isAuth"] = this.isAuth();
     loginApi["loginForm"] = loginForm;
+
+    const todoFormWithParam = (
+      <TodoForm
+        addClb={(project, persone, text, close) =>
+          this.addTodo(project, persone, text, close)
+        }
+        key={URL.todo_form}
+        me={this.state.me}
+        projectSet={this.state.projectSet}
+      />
+    );
 
     return (
       <div className="App">
@@ -181,8 +241,22 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.todo_all} loginForm={loginApi} />
                   <hr />
-                  <TodoList todoSet={this.state.todoSet} />
-                  <hr />
+                  <TodoList
+                    todoForm={(todo, cmd) => this.openTodoForm(todo, cmd)}
+                    deleteClb={(id) => this.deleteTodo(id)}
+                    todoSet={this.state.todoSet}
+                  />
+                  {this.state.me && (
+                    <TodoForm
+                      addClb={(project, persone, text, close) =>
+                        this.addTodo(project, persone, text, close)
+                      }
+                      key={URL.todo_form}
+                      me={this.state.me}
+                      projectSet={this.state.projectSet}
+                      personeSet={this.state.personeSet}
+                    />
+                  )}
                 </>
               }
             />
@@ -240,6 +314,11 @@ class App extends React.Component {
                   <hr />
                 </>
               }
+            />
+            (// URL.todo_form)
+            <Route
+              path={URL.todo_form}
+              element={<>{this.state.me && { todoFormWithParam }}</>}
             />
             (// persone_todo_all DELETE ???)
             <Route
