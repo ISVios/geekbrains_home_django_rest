@@ -16,12 +16,12 @@
 
 [Home work 7](https://github.com/ISVios/geekbrains_home_django_rest/pull/7)
 
-~~[Home work 8]("#")~~
+[Home work 8](https://github.com/ISVios/geekbrains_home_django_rest/pull/8)
 
-~~[Home work 9]("#")~~
+[Home work 9](https://github.com/ISVios/geekbrains_home_django_rest/pull/9)
 
-~~[Home work 10]("#")~~
+[Home work 10](https://github.com/ISVios/geekbrains_home_django_rest/pull/10)
 
-~~[Home work 11]("#")~~
+[Home work 11](https://github.com/ISVios/geekbrains_home_django_rest/pull/11)
 
 ~~[Home work 12]("#")~~
