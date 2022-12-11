@@ -110,18 +110,21 @@ class ProjectList extends React.Component {
     super(props);
     this.state = {
       filter_by_name: "",
+      filtered: [],
     };
   }
 
-
-	handlerSubmit(event) {
-		
-	}
+  handlerSubmit(event) {
+    const { filterProjectByName } = this.props;
+    filterProjectByName(this.state.filter_by_name, this);
+    event.preventDefault();
+  }
 
   render() {
-    const { filterProjectByName } = this.props;
-    const { projectSet } = this.props;
-
+    let { projectSet } = this.props;
+    if (this.state.filtered.length > 0) {
+      projectSet = this.state.filtered;
+    }
     return (
       <>
         <form onSubmit={(event) => this.handlerSubmit(event)}>

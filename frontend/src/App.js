@@ -85,24 +85,14 @@ class App extends React.Component {
       .catch((error) => console.error(error));
   }
 
-  openTodoForm(todo, cmd = "add") {
-    this.props.history.push(URL.todo_form);
-  }
-
-  filterProjectByName(name) {
-    if (!name || name.lenght === 0 || name.trim() === "") {
-      return this.state.projectSet;
-    }
-
+  filterProjectByName(name, projectList) {
     const headers = this.getHeadr();
-    let filtered = this.state.projectSet;
     axios
       .get(URL.project_filter_by_name(name), { headers })
       .then((response) => {
-        filtered = response.data.results;
+        projectList.setState({ filtered: response.data.results });
       })
       .catch((error) => console.error(error));
-    return filtered;
   }
 
   addProject(name, persones) {
@@ -299,8 +289,8 @@ class App extends React.Component {
                   <Menu state={URL.persone_all} loginForm={loginApi} />
                   <hr />
                   <ProjectList
-                    filterProjectByName={(name) =>
-                      this.filterProjectByName(name)
+                    filterProjectByName={(name, projectList) =>
+                      this.filterProjectByName(name, projectList)
                     }
                     projectSet={this.state.projectSet}
                   />
