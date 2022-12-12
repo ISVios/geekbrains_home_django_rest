@@ -2,7 +2,13 @@ import React from "react";
 import "./App.css";
 
 import axios from "axios";
-import { Route, BrowserRouter, Routes, Link } from "react-router-dom";
+import {
+  Route,
+  BrowserRouter,
+  Routes,
+  Link,
+  useNavigate,
+} from "react-router-dom";
 import Cookies from "universal-cookie";
 
 import Menu from "./components/Menu.js";
@@ -17,6 +23,9 @@ import {
 import LoginForm from "./components/Auth";
 import TodoList from "./components/Todo";
 
+import TodoForm from "./components/TodoForm";
+import ProjectForm from "./components/ProjectForm";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -25,6 +34,7 @@ class App extends React.Component {
       projectSet: [],
       todoSet: [],
       token: "",
+      me: null,
     };
   }
 
@@ -45,17 +55,83 @@ class App extends React.Component {
         password: password,
       })
       .then((response) => {
-        this.setToken(response.data["token"]);
+        this.setToken(response.data["token"], login);
       })
       .catch(() => {
         alert("Wrong login or password");
       });
   }
 
-  setToken(token) {
+  setToken(token, login) {
     const cookie = new Cookies();
     cookie.set("token", token);
     window.location.reload();
+  }
+
+  addTodo(project, persone, text, close) {
+    const headers = this.getHeadr();
+    const data = {
+      project: project,
+      persone: persone,
+      content: text,
+      active: close,
+    };
+    axios
+      .post(URL.todo_add, data, { headers })
+      .then((response) => {
+        const newTodo = response.data;
+        this.setState({ todoSet: [...this.state.todoSet, newTodo] });
+      })
+      .catch((error) => console.error(error));
+  }
+
+  filterProjectByName(name, projectList) {
+    const headers = this.getHeadr();
+    axios
+      .get(URL.project_filter_by_name(name), { headers })
+      .then((response) => {
+        projectList.setState({ filtered: response.data.results });
+      })
+      .catch((error) => console.error(error));
+  }
+
+  addProject(name, persones) {
+    const headers = this.getHeadr();
+    const data = { name: name, persones: persones };
+    console.log(data);
+    axios
+      .post(URL.project_add, data, { headers })
+      .then((response) => {
+        const newProject = response.data;
+        this.setState({ projectSet: [...this.state.projectSet, newProject] });
+      })
+      .catch((error) => console.error(error));
+  }
+
+  deleteProject(project, whoDel) {
+    const headers = this.getHeadr();
+    axios
+      .delete(URL.project_del(project.pk), { headers })
+      .then((response) => {
+        this.setState(
+          this.state.projectSet.filter((elem) => elem.pk !== project.pk)
+        );
+        window.location.reload();
+      })
+      .catch((error) => console.error(error));
+  }
+
+  deleteTodo(id) {
+    const headers = this.getHeadr();
+    axios
+      .delete(URL.todo_del(id), { headers })
+      .then(() => {
+        this.setState({
+          todoSet: this.state.todoSet.filter((elem) => elem.id !== id),
+        });
+        window.location.reload();
+      })
+      .catch((error) => console.error(error));
   }
 
   isAuth() {
@@ -76,15 +152,19 @@ class App extends React.Component {
       return;
     }
 
-    objs.forEach((obj) => {
-      axios
-        .get(url + obj, { headers })
-        .then((response) => {
-          const req = {};
-          req[obj + "Set"] = response.data["results"];
-          this.setState(req);
-        })
-        .catch((error) => console.log(error));
+    axios.get("http://127.0.0.1:8000/getMe/", { headers }).then((response) => {
+      this.setState({ me: response.data }, () => {
+        objs.forEach((obj) => {
+          axios
+            .get(url + obj, { headers })
+            .then((response) => {
+              const req = {};
+              req[obj + "Set"] = response.data["results"];
+              this.setState(req);
+            })
+            .catch((error) => console.log(error));
+        });
+      });
     });
   }
 
@@ -104,10 +184,12 @@ class App extends React.Component {
     let loginApi = {};
     let loginForm = null;
     let links = null;
+
+    const firstName = this.state.me ? this.state.me.firstName : null;
     if (this.isAuth()) {
       loginForm = (
         <>
-          <p>Welcome:</p>
+          <p>Welcome: {firstName}</p>
           <button onClick={() => this.logout()}>Logout</button>
         </>
       );
@@ -133,6 +215,43 @@ class App extends React.Component {
     }
     loginApi["isAuth"] = this.isAuth();
     loginApi["loginForm"] = loginForm;
+
+    const projectFormWithParam = this.state.me && (
+      <ProjectForm
+        me={this.state.me}
+        personeSet={this.state.personeSet}
+        addClb={(name, persones) => this.addProject(name, persones)}
+      />
+    );
+
+    const todoFormWithParam = (
+      <TodoForm
+        addClb={(project, persone, text, close) =>
+          this.addTodo(project, persone, text, close)
+        }
+        key={URL.todo_form}
+        me={this.state.me}
+        projectSet={this.state.projectSet}
+      />
+    );
+
+    if (!this.isAuth()) {
+      return (
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="*"
+              element={
+                <>
+                  <h2>Please Login</h2>
+                  {loginForm}
+                </>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      );
+    }
 
     return (
       <div className="App">
@@ -169,7 +288,12 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.persone_all} loginForm={loginApi} />
                   <hr />
-                  <ProjectList projectSet={this.state.projectSet} />
+                  <ProjectList
+                    filterProjectByName={(name, projectList) =>
+                      this.filterProjectByName(name, projectList)
+                    }
+                    projectSet={this.state.projectSet}
+                  />
                   <hr />
                 </>
               }
@@ -181,8 +305,22 @@ class App extends React.Component {
                 <>
                   <Menu state={URL.todo_all} loginForm={loginApi} />
                   <hr />
-                  <TodoList todoSet={this.state.todoSet} />
-                  <hr />
+                  <TodoList
+                    todoForm={(todo, cmd) => this.openTodoForm(todo, cmd)}
+                    deleteClb={(id) => this.deleteTodo(id)}
+                    todoSet={this.state.todoSet}
+                  />
+                  {this.state.me && (
+                    <TodoForm
+                      addClb={(project, persone, text, close) =>
+                        this.addTodo(project, persone, text, close)
+                      }
+                      key={URL.todo_form}
+                      me={this.state.me}
+                      projectSet={this.state.projectSet}
+                      personeSet={this.state.personeSet}
+                    />
+                  )}
                 </>
               }
             />
@@ -206,7 +344,13 @@ class App extends React.Component {
                   <hr />
                   <PersoneInfo personeSet={this.state.personeSet} />
                   <hr />
-                  <CurrentUserProjectList projectSet={this.state.projectSet} />
+                  <CurrentUserProjectList
+                    addProjectForm={projectFormWithParam}
+                    projectSet={this.state.projectSet}
+                    deleteProjectClb={(project) =>
+                      this.deleteProject(project, null)
+                    }
+                  />
                   <hr />
                 </>
               }
@@ -240,6 +384,11 @@ class App extends React.Component {
                   <hr />
                 </>
               }
+            />
+            (// URL.todo_form)
+            <Route
+              path={URL.todo_form}
+              element={<>{this.state.me && { todoFormWithParam }}</>}
             />
             (// persone_todo_all DELETE ???)
             <Route
