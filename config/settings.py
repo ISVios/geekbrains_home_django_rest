@@ -80,9 +80,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "todp",
+        "USER": "postgres_root",
+        "PASSWORD": "postgres_toor",
+        "HOST": "db",
+        "PORT": "5432",
+    },
+    "_local": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
 
 AUTH_USER_MODEL = "author.PersoneModel"
