@@ -1,15 +1,17 @@
 const URL = {};
 
+const URL_PORT = "8080";
+
 //backend get
-URL["backend"] = "http://127.0.0.1:8000/api/";
-URL["backend_token_auth"] = "http://127.0.0.1:8000/api-token-auth/";
+URL["backend"] = "http://127.0.0.1:" + URL_PORT + "/api/";
+URL["backend_token_auth"] = "http://127.0.0.1:" + URL_PORT + "/api-token-auth/";
 
 //backend post
-URL["todo_add"] = "http://127.0.0.1:8000/api/todo/";
-URL["todo_del"] = (id) => "http://127.0.0.1:8000/api/todo/" + id;
+URL["todo_add"] = "http://127.0.0.1:" + URL_PORT + "/api/todo/";
+URL["todo_del"] = (id) => "http://127.0.0.1:" + URL_PORT + "/api/todo/" + id;
 
-URL["project_add"] = "http://127.0.0.1:8000/api/project/";
-URL["project_del"] = (id) => "http://127.0.0.1:8000/api/project/" + id;
+URL["project_add"] = "http://127.0.0.1:" + URL_PORT + "/api/project/";
+URL["project_del"] = (id) => "http://127.0.0.1:" + URL_PORT + "/api/project/" + id;
 
 URL["home"] = "/";
 
@@ -24,7 +26,7 @@ URL["todo_id"] = "/todo/:todo_pk";
 URL["project_id"] = "/project/:project_pk";
 
 // Forms
-URL["logon"] = "/login";
+URL["login"] = "/login";
 URL["project_form"] = "/project_form/:project_pk";
 URL["todo_form"] = "/todo_form/:todo_pk";
 
@@ -38,7 +40,9 @@ URL["persone_project_id"] = "/persone/:persone_pk/project/:project_pk";
 // persone_id <-> todo_id
 URL["persone_todo_id"] = "/persone/:persone_pk/todo/:todo_pk";
 
+URL["me"] = "http://127.0.0.1:" + URL_PORT + "/getMe/";
+
 URL["project_filter_by_name"] = (name) =>
-  "http://127.0.0.1:8000/api/project/?name=" + name;
+  "http://127.0.0.1:" + URL_PORT + "/api/project/?name=" + name;
 
 export default URL;
