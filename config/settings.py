@@ -24,7 +24,7 @@ SECRET_KEY = "django-insecure-n2vif9ktv^^z5qk@vt_8)4(zf=2f+sm3)0lc7fxh!!1szym1&p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -80,9 +80,17 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "todo",
+        "USER": "postgres_root",
+        "PASSWORD": "postgres_toor",
+        "HOST": "db",
+        "PORT": "5432",
+    },
+    "_local": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
 }
 
 AUTH_USER_MODEL = "author.PersoneModel"
@@ -123,6 +131,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATIC_ROOT = BASE_DIR / "static"
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -130,6 +140,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "http://localhost:8080",
 ]
 
 REST_FRAMEWORK = {

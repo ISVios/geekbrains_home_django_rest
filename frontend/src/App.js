@@ -2,13 +2,7 @@ import React from "react";
 import "./App.css";
 
 import axios from "axios";
-import {
-  Route,
-  BrowserRouter,
-  Routes,
-  Link,
-  useNavigate,
-} from "react-router-dom";
+import { Route, BrowserRouter, Routes, Link } from "react-router-dom";
 import Cookies from "universal-cookie";
 
 import Menu from "./components/Menu.js";
@@ -57,7 +51,8 @@ class App extends React.Component {
       .then((response) => {
         this.setToken(response.data["token"], login);
       })
-      .catch(() => {
+      .catch((error) => {
+				console.log(error)
         alert("Wrong login or password");
       });
   }
@@ -152,7 +147,7 @@ class App extends React.Component {
       return;
     }
 
-    axios.get("http://127.0.0.1:8000/getMe/", { headers }).then((response) => {
+    axios.get(URL.me, { headers }).then((response) => {
       this.setState({ me: response.data }, () => {
         objs.forEach((obj) => {
           axios

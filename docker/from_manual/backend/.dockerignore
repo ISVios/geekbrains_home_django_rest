@@ -1,0 +1,4 @@
+.git/*
+frontend/*
+*.md
+./*.png
